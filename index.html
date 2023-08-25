@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bug Tracker</title>
+    <style>
+          .closed{
+            color: rgb(241, 24, 4);
+            text-decoration: line-through;
+            font-weight: bold;
+            font-style: italic;
+        }
+        .date{
+            color: cornflowerblue;
+            font-weight: bold;
+            font-style: italic;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script>
+        var bugTrackerApp=angular.module("bugTrackerApp",[]);
+            bugTrackerApp.run(function($rootScope){
+                console.log("app is initilized")
+            })
+
+            bugTrackerApp.controller("bugController",function($scope){
+                $scope.bugs=[
+                    {name:"Static error",isClosed:false},
+                    {name:'Stack over Flow',isClosed:false},
+                    {name:'Dynamic erroe',isClosed:false},
+                    {name:'Syntex error',isClosed:false}
+                ]
+                $scope.newBug="";
+                $scope.date=new Date;
+                $scope.addNewBugs=function(){
+                    addBug={
+                        name : $scope.newBug,
+                        isClosed:false
+                    }
+                    $scope.bugs.push(addBug);
+                    $scope.newBug=''
+                }
+                $scope.toggal=function(bug){
+                    bug.isClosed=!bug.isClosed;
+                }
+                $scope.removeClosed=function(){
+                   for(var i=$scope.bugs.length-1 ; i>=0; i--){
+                    var bug1=$scope.bugs[i];
+                        if(bug1.isClosed){
+                            $scope.bugs.splice(i,1);
+                        }
+                   }
+                }
+               $scope.closedCount=function(){
+                    var result=0;
+                    for(var i=$scope.bugs.length-1 ; i>=0; i--){
+                    var bug1=$scope.bugs[i];
+                        if(bug1.isClosed){
+                            ++result
+                        }
+                   }return result
+               }
+            });
+    </script>
+</head>
+<body ng-app="bugTrackerApp">
+    <h1>Bug Tracker</h1>
+    <div class="content" ng-controller="bugController">
+        <div class="stats">
+            <span class="closed" >{{closedCount()}}</span>
+            /
+            <span ng-bind="bugs.length"></span>
+        </div>
+        <div class="search">
+            <label for="">Search : </label>
+            <input type="text" name="" id="" ng-model="searchBug.name">
+            <label for="">is Closed </label>
+            <input type="checkbox" name="" id="" ng-model="searchBug.isClosed">
+             <input type="button" value="Show All" ng-click="searchBug.isClosed = undefined"><!-- undefined means nither true nor false -->
+        </div>
+        <div class="sort">
+            <label for="">Order By : </label>
+            <input type="text" ng-model="sortOrderBy">
+            <label for="">Desending ? </label>
+            <input type="checkbox" name="" id="" ng-model="sortOrderByDesending">
+        </div>
+        <div class="list">
+            <label for="">Bug Title : </label>
+            <input type="text" name="" id="bugname" ng-model="newBug">
+            <input type="button" value="Add Bug" ng-click="addNewBugs()">
+            <input type="button" value="Remove Closed" ng-click="removeClosed()">
+            <ol>
+                <!-- <li ng-repeat="bug in bugs" ng-bind="bug.name"></li>
+                or  -->
+                <!-- <li ng-repeat="bug in bugs | filter:{name:searchBug ,isClosed:searchBugClosed}" ng-click="toggal(bug)" ng-class="{closed :bug.isClosed}">{{bug.name}}</li> -->
+
+                <li ng-repeat="bug in bugs | filter:searchBug | orderBy :sortOrderBy :sortOrderByDesending" ng-click="toggal(bug)" ng-class="{closed :bug.isClosed}">{{bug.name }} : <span class="date">{{date | date:'d-MMM-yy ; hh.mm.ss a'}}</span></li>
+            </ol>
+        </div>
+    </div>
+    
+</body>
+</html>
