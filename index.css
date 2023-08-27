@@ -1,0 +1,11 @@
+.closed{
+    color: rgb(241, 24, 4);
+    text-decoration: line-through;
+    font-weight: bold;
+    font-style: italic;
+}
+.date{
+    color: cornflowerblue;
+    font-weight: bold;
+    font-style: italic;
+}
